@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    page administrateur
+{% endblock %}
+
+{% block main %}
+
+<script>
+    if ({{ (announcement or False)|tojson }}) {
+        alert({{ text|tojson }});
+    }
+</script>
+
+    <body>
+
+        <p>
+        <!--onsubmit="add(); return false;" permet d'éviter que la page se reload-->
+            <form method="post" class="form-inline" action='/administrateur'>
+                <input type="hidden" name="typerequete" value="add">
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="namea" placeholder="Nom" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="typea" placeholder="Type" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="categorya" placeholder="Catégorie de rangement de rangement" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="playersa" placeholder="Nombre de joueurs" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="imagea" placeholder="URL photo du jeu" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="statea" placeholder="Empruntable/Non empruntable" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="descriptiona" placeholder="Description" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-success">Ajouter</button>
+            </form>
+        </p>
+        <br>
+
+        <p>
+        <!--onsubmit="modify(); return false;" permet d'éviter que la page se reload-->
+            <form method="post" class="form-inline" action='/administrateur'>
+                <input type="hidden" name="typerequete" value="modify">
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="originalname" placeholder="Nom du jeu à modifier" required>
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="namem" placeholder="Nom">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="typem" placeholder="Type">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="categorym" placeholder="Catégorie de rangement">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="imagem" placeholder="URL photo du jeu">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="playersm" placeholder="Nombre de joueurs">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="statem" placeholder="Empruntable/Non empruntable">
+                </div>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="descriptionm" placeholder="Description">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-success">Modifier</button>
+            </form>
+        </p>
+        <br>
+
+        <p>
+        <!--onsubmit="remove(); return false;" permet d'éviter que la page se reload-->
+            <form method="post" class="form-inline" action='/administrateur'>
+                <input type="hidden" name="typerequete" value="remove">
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="namer" placeholder="Nom du jeu à supprimer" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-success">Supprimer</button>
+            </form>
+        </p>
+        <br>
+
+        <p>
+        <!--onsubmit="lastborrowed(); return false;" permet d'éviter que la page se reload-->
+            <form method="post" class="form-inline" action='/administrateur'>
+                <input type="hidden" name="typerequete" value="lastborrowed">
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" name="namel" placeholder="Nom du jeu emprunté" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-success">Dernier emprunt</button>
+            </form>
+        </p>
+    </body>
+{% endblock %}

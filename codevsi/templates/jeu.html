@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{name}}
+{% endblock %}
+
+{% block main %}
+        <div>
+            <img src="{{ data[1] }}" alt="{{ name }}" class="img-fluid rounded width gamepicturenew">
+        </div>
+        <br>
+        <div>
+            <p style="font-size: 20px;"><strong style="color: darkgreen;">{{ name }}</strong></p>
+            <p style="font-size: 20px;"><strong style="color: darkgreen;">Type de jeu: </strong><span class="inline-text">{{ data[0] }}</span></p>
+            <p style="font-size: 20px;"><strong style="color: darkgreen;">Nombre de joueurs: </strong><span class="inline-text">{{ data[2]}}</span></p>
+            <p style="font-size: 20px;"><strong style="color: darkgreen;">Lieu de rangement: </strong><span class="inline-text">{{ data[3] }}</span></p>
+            {% if empruntable %}
+                <p style="font-size: 20px;"><span class="inline-text"><strong style="color: darkgreen;">{{ data[4] }}</strong></span></p>
+            {% endif %}
+            {% if nonempruntable %}
+                <p style="font-size: 20px;"><span class="inline-text"><strong style="color: rgb(200, 0, 0);">{{ data[4] }}</strong></span></p>
+            {% endif %}
+            {% if emprunte %}
+                <p style="font-size: 20px;"><span class="inline-text"><strong style="color: darkblue;">{{ data[4] }}</strong></span></p>
+            {% endif %}
+            <p style="font-size: 20px;"><strong style="color: darkgreen;">Description: </strong><span class="inline-text textaligned">{{ data[5] }}</span></p>
+        </div>
+
+    {% if b %}
+
+        {% if empruntable %}
+            <div>
+                <form method="post" class="form-inline" action='/jeu'>
+                    <input type="hidden" name="typerequete" value="borrow">
+                    <input type="hidden" name="name" value="{{ name }}">
+                    <div class="form-group mx-sm-3">
+                        <input type="text" class="form-control" name="lastname" placeholder="Nom" required>
+                    </div>
+                    <div class="form-group mx-sm-3">
+                        <input type="text" class="form-control" name="firstname" placeholder="Prénom" required>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-success">Emprunter</button>
+                </form>
+            </div>
+        {% endif %}
+
+        {% if nonempruntable %}
+        <div>
+            <p style="font-size: 20px;">
+                <strong>Ce jeu ne peut pas être emprunté mais n'hésitez pas à en profiter à plusieurs en salle troll!</strong>
+            </p>
+        </div>
+        {% endif %}
+
+        {% if emprunte %}
+            <div>
+                <form method="post" class="form-inline" action='/jeu'>
+                    <input type="hidden" name="typerequete" value="return">
+                    <input type="hidden" name="name" value="{{ name }}">
+                    <button type="submit" class="btn btn-success">Rendre</button>
+                </form>
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+{% endblock %}

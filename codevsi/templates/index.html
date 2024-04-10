@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    search results
+{% endblock %}
+
+{% block main %}
+    {% if noresult %}
+        Aucun résultat trouvé
+    {% endif %}
+    <div class="image-container">
+        {% for item in data %}
+            <div class="image-item">
+                <a href="/jeu?name={{ item[0] }}"> <!-- Replace "item[2]" with your desired URL -->
+                    <img src="{{ item[1] }}" alt="{{ item[0] }}" class="img-fluid rounded width gamepicture">
+                </a>
+                <p>{{ item[0] }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

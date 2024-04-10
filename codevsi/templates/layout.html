@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+
+        <!-- http://getbootstrap.com/docs/5.3/ -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+        <!--Ajouter un fichier favicon.ico avec l'icône qu'on veut dans le fichier static-->
+        <link href="/static/logotroll.ico" rel="icon">
+
+        <link href="/static/styles.css" rel="stylesheet">
+
+        <title>Club troll: {% block title %}{% endblock %}</title>
+
+    </head>
+
+    <body>
+        <nav class="bg-lightgreen border navbar navbar-expand-md navbar-light">
+            <img src="/static/logotroll.ico" alt="Logo" class="responsive maxsizelogo">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><span style="font-weight:bold;">Club Troll</span></a>
+                {% if show_link %}
+                    <a href="/" style="color: darkgreen; font-weight: bold">Home</a>
+                {% endif %}
+                <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button" style="background-color:white>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+
+        {% if show_bar %}
+
+        <main class="container py-5 text-center">
+
+            <form action="/search" method="get">
+                <div class="input-group">
+                    <input id="searchBar" type="text" name="searchBar" class="form-control" placeholder="Search" required>
+                    <button type="submit" class="btn btn-dark" style="background-color:white">
+                        <img src="/static/loupe.ico" alt="Search icon" class="me-2 ms-2" style="width: 20px; height:20px; display: block; margin-left: auto; margin-right: auto;">
+                    </button>
+                    <div id="dropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="display: none;">
+                    <!-- Items will be added here dynamically -->
+                    </div>
+                </div>
+            </form>
+        </main>
+        {% endif %}
+    </body>
+
+        <main class="container py-5 text-center">
+            {% block main %}{% endblock %}
+        </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchBarBis = document.getElementById("searchBar");
+                const dropdownMenu = document.getElementById('dropdownMenu');
+    
+                if (searchBarBis !== null) {
+                    console.log("Event listener attached: true");
+    
+                    searchBarBis.addEventListener("keyup", (event) => {
+                        const inputValue = event.target.value;
+    
+                        fetch('/searchsuggestion', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                searchBarBis: inputValue,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                            // Clear the current contents
+                                dropdownMenu.innerHTML = '';
+    
+                            // Log the response data
+                                console.log("Response data:", data);
+    
+                                if (data.length > 0) {
+                                // Add new items to the dropdown menu
+                                // Get the search bar element
+                                    const searchBar = document.getElementById('searchBar');
+    
+                                // Get the width of the search bar
+                                    const searchBarWidth = searchBar.offsetWidth;
+    
+                                    data.forEach((item, index) => {
+                                    // Create a new div element for each item
+                                        const newDiv = document.createElement('div');
+                                    // Add a class to style the box
+                                        newDiv.classList.add('item-box');
+                                    // Set its text content to the item
+                                        newDiv.textContent = item;
+    
+                                    // Set the width of the box to match the search bar width
+                                        newDiv.style.width = `${searchBarWidth}px`;
+    
+                                    // Add tabindex attribute to make the item focusable
+                                        newDiv.setAttribute('tabindex', '0');
+    
+                                    // Add keydown event listener for arrow key navigation
+                                        newDiv.addEventListener('keydown', (event) => {
+                                            if (event.key === 'ArrowDown') {
+                                            // Move focus to the next item, if it exists
+                                                const nextItem = dropdownMenu.children[index + 1];
+                                                if (nextItem) {
+                                                    nextItem.focus();
+                                                }
+                                            } else if (event.key === 'ArrowUp') {
+                                            // Move focus to the previous item, if it exists
+                                                const prevItem = dropdownMenu.children[index - 1];
+                                                if (prevItem) {
+                                                    prevItem.focus();
+                                                }
+                                            }
+                                        });
+    
+                                    // Add keyup event listener for additional actions
+                                        newDiv.addEventListener('keyup', (event) => {
+                                            if (event.key === 'Enter') {
+                                            // Handle Enter key press, for example, navigate to the desired page
+                                                window.location.href = `/jeu?name=${encodeURIComponent(item)}&b=False`;
+                                            }
+                                        });
+    
+                                    // Attach a click event listener to the div
+                                        newDiv.addEventListener('click', () => {
+                                        // Navigate to the desired page with the item's value
+                                            window.location.href = `/jeu?name=${encodeURIComponent(item)}&b=False`;
+                                        });
+    
+                                    // Add the new div to the dropdown menu
+                                        dropdownMenu.appendChild(newDiv);
+                                    });
+    
+                                // Make the dropdown menu visible
+                                    dropdownMenu.style.display = 'block';
+                                } else {
+                                // Hide the dropdown menu if there are no suggestions
+                                    dropdownMenu.style.display = 'none';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching search suggestions:', error);
+                            });
+                    });
+                } else {
+                    console.log("Event listener attached: false");
+                }
+            });
+        </script>
+    </body>
+
+</html>
